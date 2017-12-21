@@ -17,3 +17,19 @@ foreach ($user in $users)
 }
 
 ---------------------------------
+
+#uninstall sw on specific server the csv file need to have the following column name: ComputerName,Domain,SwName
+
+$csv = Import-Csv "toberemoved.csv" -Delimiter ';'
+
+foreach($dc in $csv)
+{write-host "------------------"
+    Write-Host $dc.Computername
+
+    $app = Get-WmiObject -Class Win32_Product | Where-Object { $_.name -eq $dc.SwName } #uninstalling sw
+        if($app)
+        {
+            Write-Host  "Removing:" $dc.SwName -ForegroundColor Green
+            $app.Uninstall()
+        }
+}
