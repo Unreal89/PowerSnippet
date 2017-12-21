@@ -1,0 +1,19 @@
+#oneline bulk disable ADuser
+
+Get-content "user.txt" | ForEach-Object -Process { Disable-ADAccount -Identity $_ }
+
+---------------------------
+
+#check user status and export in excel
+
+Get-content "user.txt" | ForEach-Object -Process { Get-ADUser -Identity $_ -Server '[GlobalCatalogAddress:port]' | Select-Object -Property samaccountname,enabled | Export-Csv userStatus.csv -NoTypeInformation}
+#exploded version
+$users = Get-content "user.txt"  #txt file with users to unlock
+$server = "globalCatalog:port" #GC server  - DON'T CHANGE
+
+foreach ($user in $users)
+{
+    Get-ADUser -Identity $user -Server $server | Select-Object -Property samaccountname,enabled | Export-Csv userStatus.csv -NoTypeInformation
+}
+
+---------------------------------
