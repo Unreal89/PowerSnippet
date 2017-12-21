@@ -26,7 +26,7 @@ foreach($dc in $csv)
 {write-host "------------------"
     Write-Host $dc.Computername
 
-    $app = Get-WmiObject -Class Win32_Product | Where-Object { $_.name -eq $dc.SwName } #uninstalling sw
+    $app = Get-WmiObject -Class Win32_Product -Computer $dc.Computername | Where-Object { $_.name -eq $dc.SwName } #uninstalling sw
         if($app)
         {
             Write-Host  "Removing:" $dc.SwName -ForegroundColor Green
