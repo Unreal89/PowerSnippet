@@ -2,7 +2,7 @@
 
 Get-content "user.txt" | ForEach-Object -Process { Disable-ADAccount -Identity $_ }
 
----------------------------
+#---------------------------
 
 #check user status and export in excel
 
@@ -16,7 +16,7 @@ foreach ($user in $users)
     Get-ADUser -Identity $user -Server $server | Select-Object -Property samaccountname,enabled | Export-Csv userStatus.csv -NoTypeInformation
 }
 
----------------------------------
+#---------------------------------
 
 #uninstall sw on specific server the csv file need to have the following column name: ComputerName,Domain,SwName
 
@@ -33,3 +33,19 @@ foreach($dc in $csv)
             $app.Uninstall()
         }
 }
+
+#---------------------------
+#disable/stop services in bulk, from a list of ip/hostname
+
+$service = "Spooler" #service name
+$pcs = Get-Content c:\temp\ip.txt #list of ip address/hostname where disable it
+foreach ($computer in $pcs)
+{ 
+$result = (gwmi win32_service -computername $computer -filter "name='$service'").stopservice()
+$result = (gwmi win32_service -computername $computer -filter "name='$service'").ChangeStartMode("Disabled") 
+} 
+#$result = (gwmi win32_service -computername $computer -filter "name='$service'").stopservice() 
+#$result = (gwmi win32_service -computername $computer -filter "name='$service'").ChangeStartMode("Disabled") 
+#$result = (gwmi win32_service -computername $computer -filter "name='$service'").ChangeStartMode("Automatic") 
+#-----------------------------
+# 
